@@ -23,9 +23,13 @@ class HOSTINGTEST_API UMyGameInstance : public UGameInstance
 
     FString CurrentDeviceID;
     class UUserWidget* CurrentMainMenu;
+    class UUserWidget* ServerWidget;
 
     UPROPERTY(meta = (BindWidget))
-    class UPanelWidget* ServerList;
+    class UPanelWidget* ServerListPanel;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* ServerTextPanel;
 
 protected:
     //Array to store names of the current servers hosting a game
@@ -33,6 +37,10 @@ protected:
     TArray<FString> ServerNamesList;
 
 public:
+
+    //Public Variable to set the current main menu
+    UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+    TSubclassOf<class UUserWidget> wServerWidget;
 
     //Storing the name of levels
     UPROPERTY(EditDefaultsOnly, Category = "Level")

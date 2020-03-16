@@ -9,6 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/PanelWidget.h"
+#include "Components/TextBlock.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 
 //A FName used to set key during Session Creation so can be used to find sessions later with name
@@ -151,15 +152,31 @@ void UMyGameInstance::DestroyingSessionSucessful(FName SessionName, bool Success
 void UMyGameInstance::SetMenuWidget(UUserWidget* MainMenu)
 {
 	CurrentMainMenu = MainMenu;
-	ServerList = Cast<UPanelWidget>(CurrentMainMenu->WidgetTree->FindWidget(ServerListWidgetName));
+	ServerListPanel = Cast<UPanelWidget>(CurrentMainMenu->WidgetTree->FindWidget(ServerListWidgetName));
 	
 }
 
 void UMyGameInstance::SetServerList()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Adding Name to server List"));
-	if (ServerList)
+	if (ServerListPanel && wServerWidget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Got the area "));
+		//Delete old / existing Server names in the list
+		ServerListPanel->ClearChildren();
+
+		UE_LOG(LogTemp, Warning, TEXT("Got the area with %d"), ServerNamesList.Num());
+		for (int i = 0; i < ServerNamesList.Num(); i++)
+		{
+			ServerWidget = CreateWidget<UUserWidget>(this, wServerWidget);
+			ServerTextPanel = Cast<UTextBlock>(ServerWidget->WidgetTree->FindWidget("ServerName"));
+			if (ServerTextPanel)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Got Text Panel "));
+				ServerTextPanel->SetText(FText::FromString(ServerNamesList[i]));
+
+				ServerListPanel->AddChild(ServerWidget);
+			}
+		}
+		
 	}
 }
