@@ -3,7 +3,6 @@
 
 #include "MyGameInstance.h"
 #include "OnlineSessionSettings.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
@@ -39,7 +38,7 @@ void UMyGameInstance::Init()
 	{
 		Sessions->OnCreateSessionCompleteDelegates.AddUObject(this, &UMyGameInstance::CreatingSessionSuccessful);
 		Sessions->OnFindSessionsCompleteDelegates.AddUObject(this, &UMyGameInstance::SearchingSessionSuccessful);
-		//Sessions->OnJoinSessionCompleteDelegates.AddUObject(this, &UMyGameInstance::JoiningSessionSuccessful);
+		Sessions->OnJoinSessionCompleteDelegates.AddUObject(this, &UMyGameInstance::JoiningSessionSuccessful);
 		Sessions->OnDestroySessionCompleteDelegates.AddUObject(this, &UMyGameInstance::DestroyingSessionSucessful);
 
 		CurrentDeviceID = FGenericPlatformMisc::GetDeviceId();
@@ -90,6 +89,7 @@ void UMyGameInstance::JoinGameSession()
 	UE_LOG(LogTemp, Warning, TEXT("Joining Lobby"));
 
 	//Join the lobby selected by client
+	//SessionFiringStatus = Sessions->JoinSession()
 }
 
 void UMyGameInstance::ExitGameSession()
@@ -140,9 +140,9 @@ void UMyGameInstance::SearchingSessionSuccessful(bool Success)
 
 }
 
-//void UMyGameInstance::JoiningSessionSuccessful(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
-//{
-//}
+void UMyGameInstance::JoiningSessionSuccessful(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+}
 
 
 void UMyGameInstance::DestroyingSessionSucessful(FName SessionName, bool Success)

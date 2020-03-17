@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "MyGameInstance.generated.h"
 
 /**
@@ -77,8 +78,7 @@ public:
     UFUNCTION()
     void SearchingSessionSuccessful(bool Success);
 
-   // UFUNCTION()
-   // void JoiningSessionSuccessful(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+    void JoiningSessionSuccessful(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
     UFUNCTION()
     void DestroyingSessionSucessful(FName SessionName, bool Success);
