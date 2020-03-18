@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/PanelWidget.h"
 #include "Components/TextBlock.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
@@ -80,6 +81,12 @@ void UMyGameInstance::SearchGameSession()
 	if (ListOfSessions.IsValid())
 	{
 		ListOfSessions->MaxSearchResults = 10;
+		if (ServerListPanel)
+		{
+			//Delete old / existing Server names in the list
+			ServerListPanel->ClearChildren();
+			DestroyServerWidgets();
+		}
 		SessionFiringStatus = Sessions->FindSessions(0, ListOfSessions.ToSharedRef());
 	}
 }
@@ -161,9 +168,7 @@ void UMyGameInstance::SetServerList()
 	UE_LOG(LogTemp, Warning, TEXT("Adding Name to server List"));
 	if (ServerListPanel && wServerWidget)
 	{
-		//Delete old / existing Server names in the list
-		ServerListPanel->ClearChildren();
-
+	
 		UE_LOG(LogTemp, Warning, TEXT("Got the area with %d"), ServerNamesList.Num());
 		for (int i = 0; i < ServerNamesList.Num(); i++)
 		{
@@ -179,4 +184,28 @@ void UMyGameInstance::SetServerList()
 		}
 		
 	}
+}
+
+void UMyGameInstance::DestroyServerWidgets()
+{
+	//CurrentWidgets->ConditionalBeginDestroy();
+	TArray<UUserWidget*> FoundWidgets;
+
+	FoundWidgets.Empty();
+
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, wServerWidget, false);
+
+	int ArrayIndex = FoundWidgets.Num()-1;
+	UE_LOG(LogTemp, Warning, TEXT("The list of server found is %d"), ArrayIndex);
+
+	if (ArrayIndex>=0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Inside Array index if %d "), ArrayIndex);
+		for (int i = ArrayIndex; i>=0; i--)
+		{
+			FoundWidgets[ArrayIndex]->ConditionalBeginDestroy();
+			UE_LOG(LogTemp, Warning, TEXT("Destroying server widget with index%d "), i);
+		}
+	}
+	
 }

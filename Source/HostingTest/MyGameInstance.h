@@ -89,4 +89,7 @@ public:
     UFUNCTION()
     void SetServerList();
 
+    UFUNCTION(BlueprintCallable)
+    void DestroyServerWidgets();
+
 };
