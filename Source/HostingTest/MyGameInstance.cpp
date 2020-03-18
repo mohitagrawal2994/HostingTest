@@ -91,12 +91,21 @@ void UMyGameInstance::SearchGameSession()
 	}
 }
 
-void UMyGameInstance::JoinGameSession()
+void UMyGameInstance::JoinGameSession(int32 SessionIndexToJoin)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Joining Lobby"));
 
 	//Join the lobby selected by client
-	//SessionFiringStatus = Sessions->JoinSession()
+	//SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
+
+	FName SessionToJoin = "";
+	FString ServerName = "";
+
+	if (ListOfSessions->SearchResults[SessionIndexToJoin].Session.SessionSettings.Get(SERVER_NAME_SETTINGS_KEY, ServerName))
+	{
+		SessionToJoin = FName(*ServerName);
+	}
+	SessionFiringStatus = Sessions->JoinSession(0, SessionToJoin, ListOfSessions->SearchResults[SessionIndexToJoin]);
 }
 
 void UMyGameInstance::ExitGameSession()
@@ -149,6 +158,20 @@ void UMyGameInstance::SearchingSessionSuccessful(bool Success)
 
 void UMyGameInstance::JoiningSessionSuccessful(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Joining Lobby Successful"));
+
+	if (!Sessions.IsValid()) return;
+
+	FString Address;
+	if (!Sessions->GetResolvedConnectString(SessionName, Address)) {
+		UE_LOG(LogTemp, Warning, TEXT("Could not get connect string."));
+		return;
+	}
+
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+	if (!ensure(PlayerController != nullptr)) return;
+
+	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
 
 

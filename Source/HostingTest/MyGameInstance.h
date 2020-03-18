@@ -64,7 +64,7 @@ public:
     void SearchGameSession();
 
     UFUNCTION(BlueprintCallable)
-    void JoinGameSession();
+    void JoinGameSession(int32 SessionIndexToJoin);
 
     UFUNCTION(BlueprintCallable)
     void ExitGameSession();
